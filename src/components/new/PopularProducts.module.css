@@ -17,7 +17,7 @@
 .header h2 {
   font-size: 1.6rem;
   font-weight: 600;
-  color: #111;
+  color: #03010e;
 }
 
 .viewAll {
@@ -185,7 +185,7 @@
   padding: 0.45rem;
   border-radius: 6px;
   border: none;
-  background: #111;
+  background: #0071dc;
   color: #fff;
   font-size: 0.8rem;
   display: flex;

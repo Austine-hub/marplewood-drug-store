@@ -1,4 +1,4 @@
-//src/components/new/ProductsGrid.tsx
+// src/components/new/ProductsGrids.tsx
 
 "use client";
 
@@ -10,137 +10,122 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 
 import { useCart } from "@/context/CartContext";
-import {
-  products,
-  type Product,
-  formatCurrency,
-  getDiscountPercent,
-  isInStock,
-} from "@/data/details/ProductGrid";
-
+import { getAllDealsInKSH, type DealViewModel } from "@/data/details/ProductGrid";
 import styles from "./ProductGrid.module.css";
 
 /* -------------------------------------------------------------------------- */
-/* Product Card                                                               */
+/* Deal Card Component                                                        */
 /* -------------------------------------------------------------------------- */
 
-interface ProductCardProps {
-  product: Product;
-  onAddToCart: (product: Product) => void;
+interface DealCardProps {
+  deal: DealViewModel;
+  onAddToCart: (deal: DealViewModel) => void;
 }
 
-const ProductCard = memo(function ProductCard({
-  product,
-  onAddToCart,
-}: ProductCardProps) {
-  // HARD GUARD — prevents runtime crashes forever
-  if (!product || typeof product.price !== "number") {
-    return null;
-  }
+const DealCard = memo(function DealCard({ deal, onAddToCart }: DealCardProps) {
+  if (!deal || typeof deal.priceKSH !== "number") return null;
 
-  const discount = getDiscountPercent(product);
-  const inStock = isInStock(product);
+  const { isActive: inStock, discount, slug, img, name, mrpFormattedKSH, priceFormattedKSH, savingsKSH } = deal;
+  const hasDiscount = discount > 0;
 
-  const handleAdd = useCallback(
+  const handleAddToCart = useCallback(
     (e: React.MouseEvent) => {
+      e.preventDefault();
       e.stopPropagation();
+      
       if (!inStock) {
-        toast.error("Out of stock");
+        toast.error("Item currently unavailable");
         return;
       }
-      onAddToCart(product);
+      
+      onAddToCart(deal);
     },
-    [onAddToCart, product, inStock]
+    [onAddToCart, deal, inStock]
   );
 
-  const stop = (e: React.MouseEvent) => e.stopPropagation();
+  const stopPropagation = (e: React.MouseEvent) => e.stopPropagation();
 
   return (
     <motion.article
-      className={styles.card}
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.2 }}
-      aria-disabled={!inStock}
+      className={`${styles.card} ${!inStock ? styles.cardDisabled : ""}`}
+      whileHover={inStock ? { y: -6 } : {}}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      aria-label={name}
     >
-      {discount > 0 && (
-        <span className={styles.badge}>{discount}% OFF</span>
+      {hasDiscount && (
+        <div className={styles.badge}>
+          <span className={styles.badgeText}>{discount}% OFF</span>
+        </div>
       )}
 
-      {/* Quick actions */}
       <div className={styles.actions}>
         <button
-          className={styles.iconBtn}
-          onClick={stop}
+          className={styles.actionBtn}
+          onClick={stopPropagation}
           aria-label="Add to wishlist"
+          title="Add to wishlist"
         >
-          <Heart size={16} />
+          <Heart size={18} strokeWidth={2} />
         </button>
 
         <Link
-          href={`/products/${product.id}`}
-          className={styles.iconBtn}
-          aria-label="View product"
-          onClick={stop}
+          href={`/products/${slug}`}
+          className={styles.actionBtn}
+          aria-label="View details"
+          title="View details"
+          onClick={stopPropagation}
         >
-          <Eye size={16} />
+          <Eye size={18} strokeWidth={2} />
         </Link>
-
-        <button
-          className={styles.iconBtn}
-          onClick={handleAdd}
-          aria-label="Quick add to cart"
-          disabled={!inStock}
-        >
-          <ShoppingCart size={16} />
-        </button>
       </div>
 
-      {/* Image */}
-      <Link
-        href={`/products/${product.id}`}
-        className={styles.imageWrapper}
-        onClick={stop}
-      >
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          className={styles.image}
-          sizes="(max-width: 480px) 50vw, (max-width: 768px) 33vw, 25vw"
-        />
+      <Link href={`/products/${slug}`} className={styles.imageWrapper} onClick={stopPropagation}>
+        <div className={styles.imageContainer}>
+          <Image
+            src={img}
+            alt={name}
+            fill
+            className={styles.image}
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            priority={false}
+          />
+        </div>
       </Link>
 
-      {/* Content */}
       <div className={styles.content}>
-        <h3 className={styles.name}>{product.name}</h3>
+        <Link href={`/products/${slug}`} className={styles.nameLink} onClick={stopPropagation}>
+          <h3 className={styles.name}>{name}</h3>
+        </Link>
 
         <div className={styles.pricing}>
-          {product.oldPrice && (
-            <span className={styles.oldPrice}>
-              {formatCurrency(product.oldPrice, product.currency)}
-            </span>
-          )}
-
-          <span className={styles.price}>
-            {formatCurrency(product.price, product.currency)}
-          </span>
+          {hasDiscount && <span className={styles.mrp}>{mrpFormattedKSH}</span>}
+          <span className={styles.price}>{priceFormattedKSH}</span>
         </div>
 
-        <div className={styles.ctaRow}>
-          <Link
-            href={`/products/${product.id}`}
-            className={styles.viewBtn}
-            onClick={stop}
-          >
-            View
+        {hasDiscount && (
+          <div className={styles.savings}>
+            Save {new Intl.NumberFormat("en-KE", {
+              style: "currency",
+              currency: "KES",
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            }).format(savingsKSH)}
+          </div>
+        )}
+
+        <div className={styles.buttonGroup}>
+          <Link href={`/products/${slug}`} className={styles.viewBtn} onClick={stopPropagation}>
+            View Details
           </Link>
 
           <button
-            className={styles.addToCart}
-            onClick={handleAdd}
+            className={styles.cartBtn}
+            onClick={handleAddToCart}
             disabled={!inStock}
+            aria-label={inStock ? "Add to cart" : "Out of stock"}
           >
-            {inStock ? "Add to cart" : "Out of stock"}
+            <ShoppingCart size={16} strokeWidth={2} />
+            <span>{inStock ? "Add to Cart" : "Out of Stock"}</span>
           </button>
         </div>
       </div>
@@ -149,51 +134,68 @@ const ProductCard = memo(function ProductCard({
 });
 
 /* -------------------------------------------------------------------------- */
-/* Grid                                                                       */
+/* Main Grid Component                                                        */
 /* -------------------------------------------------------------------------- */
 
-export default function ProductsGrid() {
+export default function DealsGrid() {
   const { addToCart } = useCart();
+  const deals = getAllDealsInKSH();
 
   const handleAddToCart = useCallback(
-    (product: Product) => {
+    (deal: DealViewModel) => {
       addToCart({
-        id: String(product.id),
-        name: product.name,
-        price: product.price,
+        id: deal.id,
+        name: deal.name,
+        price: deal.priceKSH,
         quantity: 1,
-        image: product.image,
-        category: product.category,
-        stock: product.stock,
-        inStock: product.stock > 0,
+        image: deal.img,
+        category: deal.category,
+        stock: 10,
+        inStock: deal.isActive,
       });
 
-      toast.success(`${product.name} added to cart`, {
-        icon: "🛒",
-      });
+      toast.success(
+        <div className={styles.toastContent}>
+          <strong>{deal.name}</strong>
+          <span>Added to cart successfully</span>
+        </div>,
+        {
+          icon: "✓",
+          duration: 3000,
+          position: "top-right",
+        }
+      );
     },
     [addToCart]
   );
 
-  return (
-    <section className={styles.section} aria-labelledby="products-title">
-      <header className={styles.header}>
-        <h2 id="products-title" className={styles.title}>
-          Popular Products
-        </h2>
+  if (!deals?.length) {
+    return (
+      <section className={styles.section}>
+        <p className={styles.emptyState}>No deals available at the moment.</p>
+      </section>
+    );
+  }
 
-        <Link href="/more/popular" className={styles.viewAll}>
-          View All <ArrowRight size={18} />
+  return (
+    <section className={styles.section} aria-labelledby="deals-heading">
+      <header className={styles.header}>
+        <div className={styles.headerContent}>
+          <h2 id="deals-heading" className={styles.title}>
+            Featured Healthcare Deals
+          </h2>
+          <p className={styles.subtitle}>Quality products at exceptional prices</p>
+        </div>
+
+        <Link href="/deals" className={styles.viewAll}>
+          <span>View All Deals</span>
+          <ArrowRight size={20} strokeWidth={2} />
         </Link>
-      </header>       
+      </header>
 
       <div className={styles.grid}>
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onAddToCart={handleAddToCart}
-          />
+        {deals.map((deal) => (
+          <DealCard key={deal.id} deal={deal} onAddToCart={handleAddToCart} />
         ))}
       </div>
     </section>
