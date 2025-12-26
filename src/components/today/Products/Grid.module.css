@@ -1,0 +1,163 @@
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Product Card Styling */
+.productCard {
+  background: #ffffff;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 380px;
+}
+
+.imageWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 160px;
+  margin-bottom: 16px;
+}
+
+.productImage {
+  object-fit: contain;
+}
+
+.ratingWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.stars {
+  display: flex;
+  color: #fbbf24;
+  font-size: 14px;
+}
+
+.starEmpty {
+  color: #e5e7eb;
+}
+
+.reviewCount {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.productName {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.4;
+  margin: 0 0 12px 0;
+  flex-grow: 1;
+}
+
+.priceWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #059669; /* Exact green from image */
+}
+
+.originalPrice {
+  font-size: 14px;
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+.addToCartBtn {
+  width: 100%;
+  padding: 12px;
+  background-color: #fff7ed;
+  color: #f97316;
+  border: none;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addToCartBtn:hover {
+  background-color: #ffedd5;
+}
+
+/* Promo Card Styling */
+.promoCard {
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 450px;
+}
+
+/* Specific background colors from your image */
+.promoMint { background-color: #f0fdf4; }
+.promoGray { background-color: #f3f4f6; }
+
+.promoBadge {
+  font-size: 12px;
+  font-weight: 600;
+  color: #065f46;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.promoTitle {
+  font-size: 32px;
+  font-weight: 800;
+  color: #064e3b;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.promoSubtitle {
+  font-size: 15px;
+  color: #374151;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.promoLink {
+  font-weight: 600;
+  color: #065f46;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.promoImageWrapper {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 20px;
+}
+
+@media (max-width: 1024px) {
+  .grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 640px) {
+  .grid { grid-template-columns: 1fr; }
+}

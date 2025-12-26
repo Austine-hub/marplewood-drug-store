@@ -1,0 +1,476 @@
+/*src/components/header/Header.module.css*/
+
+/* Header Container */
+.header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+/* Logo Section */
+.logoSection {
+  flex-shrink: 0;
+}
+
+.logoLink {
+  text-decoration: none;
+  display: block;
+  transition: opacity 0.2s ease;
+}
+
+.logoLink:hover {
+  opacity: 0.85;
+}
+
+.logoLink:focus {
+  outline: 2px solid #0066cc;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+.logoText {
+  font-size: 2rem;
+  font-weight: 400;
+  font-style: italic;
+  color: #1a1a1a;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.logoSubtext {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: #4a4a4a;
+  margin-top: 0.125rem;
+  font-family: 'Arial', sans-serif;
+}
+
+.logoTagline {
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  color: #6b7280;
+  margin-top: 0.125rem;
+  font-family: 'Arial', sans-serif;
+  font-weight: 400;
+}
+
+/* Search Section */
+.searchSection {
+  flex: 1;
+  max-width: 600px;
+  min-width: 300px;
+}
+
+.searchForm {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.searchWrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  color: #6b7280;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  color: #1a1a1a;
+  background-color: #f9fafb;
+  transition: all 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.searchInput::placeholder {
+  color: #9ca3af;
+}
+
+.searchInput:hover {
+  border-color: #9ca3af;
+  background-color: #ffffff;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #0066cc;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.searchButton {
+  padding: 0.75rem 2rem;
+  background-color: #0066cc;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.searchButton:hover {
+  background-color: #0052a3;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+}
+
+.searchButton:active {
+  transform: translateY(0);
+}
+
+.searchButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.3);
+}
+
+.cartPriceWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+
+.cartPrice {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+.cartIconWrapper {
+  position: relative;
+}
+
+
+.cartBadge {
+  position: absolute;
+  top: -0.6rem;          /* lifts it above the price */
+  left: -0.95rem;  /* pulls it closer to the icon */
+  
+  background: #ffc220;
+  color: #000;
+  border-radius: 999px;
+  min-width: 1.1rem;
+  height: 1.1rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+
+
+/* Actions Section */
+.actionsSection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem;
+  background: none;
+  border: none;
+  color: #4b5563;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.actionButton:hover {
+  background-color: #f3f4f6;
+  color: #1a1a1a;
+}
+
+.actionButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+}
+
+.actionButton svg {
+  flex-shrink: 0;
+}
+
+.accountInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.accountLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.accountSubLabel {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.cartButton {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 1rem;
+  background: none;
+  border: none;
+  color: #4b5563;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  cursor: pointer; /* OK */
+}
+
+.cartButton:hover {
+  background-color: #f3f4f6;
+  color: #1a1a1a;
+}
+
+.cartButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+}
+
+.cartButton svg {
+  flex-shrink: 0;
+}
+
+.cartInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.cartAmount {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.cartLabel {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Accessibility */
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* src/components/header/Header.module.css */
+
+/* 1. Hide the button by default (Desktop) */
+.menuButton {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: #333; /* Match your brand color */
+  transition: color 0.2s ease;
+}
+
+.menuButton:hover {
+  color: #0070f3; /* Optional hover effect */
+}
+
+/* 2. Show the button on Mobile/Tablets */
+@media (max-width: 1024px) {
+  .menuButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Position it at the start of the header container */
+    order: -1; 
+    margin-right: 15px;
+  }
+
+  /* Optional: Adjust the logo or search bar size on mobile 
+     to make room for the hamburger menu */
+  .logoSection {
+    flex: 1;
+  }
+}
+
+/* 3. Hide other elements on small screens if they crowd the header */
+@media (max-width: 480px) {
+  .accountLabel, .cartLabel {
+    display: none; /* Only show icons for account/cart on very small screens */
+  }
+}
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .container {
+    padding: 1rem 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .searchSection {
+    min-width: 250px;
+  }
+
+  .accountInfo,
+  .cartInfo {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-wrap: wrap;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .searchSection {
+    order: 3;
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  .actionsSection {
+    gap: 0.25rem;
+  }
+
+  .actionButton {
+    padding: 0.5rem;
+  }
+
+  .cartButton {
+    padding: 0.5rem;
+  }
+
+  .searchButton {
+    padding: 0.75rem 1.5rem;
+  }
+
+  .logoText {
+    font-size: 1.5rem;
+  }
+
+  .logoSubtext {
+    font-size: 0.625rem;
+  }
+
+  .logoTagline {
+    font-size: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.75rem;
+  }
+
+  .actionButton:nth-child(2) {
+    display: none;
+  }
+
+  .searchInput {
+    font-size: 0.875rem;
+    padding: 0.625rem 1rem 0.625rem 2.5rem;
+  }
+
+  .searchButton {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .header {
+    box-shadow: none;
+    border-bottom: 1px solid #000;
+  }
+
+  .searchSection,
+  .actionsSection {
+    display: none;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .header {
+    border-bottom: 2px solid #000;
+  }
+
+  .searchInput {
+    border: 2px solid #000;
+  }
+
+  .searchButton {
+    border: 2px solid #000;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  :global(*) {
+    transition: none !important;
+    animation: none !important;
+  }
+}
