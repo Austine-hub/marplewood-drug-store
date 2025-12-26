@@ -2,40 +2,41 @@
 
 "use client";
 
-import React, { memo, useCallback } from "react";
+import { memo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Heart, Eye, ShoppingCart } from "lucide-react";
 import toast from "react-hot-toast";
 
 import styles from "./PopularProducts.module.css";
-import { products } from "@/data/details/popular";
+import { getAllDealsInKSH } from "@/data/details/popular";
 import { useCart } from "@/context/CartContext";
 
 /* -------------------------------------------------------------------------- */
 /* Types                                                                      */
 /* -------------------------------------------------------------------------- */
 
-interface Product {
-  id: number;
+interface Deal {
+  id: string;
+  slug: string;
   name: string;
-  price: number;
-  oldPrice?: number;
-  image: string;
-  badge?: string;
+  priceKSH: number;
+  mrpKSH: number;
+  img: string;
+  discount: number;
 }
 
-interface ProductCardProps extends Product {
-  onView: (id: number) => void;
-  onAddToCart: (product: Product) => void;
+interface CardProps extends Deal {
+  onView: (slug: string) => void;
+  onAddToCart: (deal: Deal) => void;
 }
 
 /* -------------------------------------------------------------------------- */
 /* Product Card                                                               */
 /* -------------------------------------------------------------------------- */
 
-const ProductCard: React.FC<ProductCardProps> = memo(
-  ({ id, name, price, oldPrice, image, badge, onView, onAddToCart }) => {
+const ProductCard = memo<CardProps>(
+  ({ slug, name, priceKSH, mrpKSH, img, discount, onView, onAddToCart }) => {
     const stop = (e: React.MouseEvent) => e.stopPropagation();
 
     return (
@@ -43,12 +44,13 @@ const ProductCard: React.FC<ProductCardProps> = memo(
         className={styles.card}
         role="button"
         tabIndex={0}
-        onClick={() => onView(id)}
-        onKeyDown={(e) => e.key === "Enter" && onView(id)}
+        onClick={() => onView(slug)}
+        onKeyDown={(e) => e.key === "Enter" && onView(slug)}
       >
-        {badge && <span className={styles.badge}>{badge}</span>}
+        {discount > 0 && (
+          <span className={styles.badge}>{discount}% OFF</span>
+        )}
 
-        {/* Floating actions */}
         <div className={styles.actions}>
           <button
             aria-label="Add to wishlist"
@@ -63,17 +65,16 @@ const ProductCard: React.FC<ProductCardProps> = memo(
             className={styles.iconBtn}
             onClick={(e) => {
               stop(e);
-              onView(id);
+              onView(slug);
             }}
           >
             <Eye size={16} />
           </button>
         </div>
 
-        {/* Image */}
         <div className={styles.imageWrapper}>
           <Image
-            src={image}
+            src={img}
             alt={name}
             width={240}
             height={240}
@@ -82,14 +83,13 @@ const ProductCard: React.FC<ProductCardProps> = memo(
           />
         </div>
 
-        {/* Info */}
         <div className={styles.info}>
           <h3 className={styles.title}>{name}</h3>
 
           <div className={styles.priceRow}>
-            <span className={styles.current}>KES {price.toFixed(2)}</span>
-            {oldPrice && (
-              <span className={styles.old}>KES {oldPrice.toFixed(2)}</span>
+            <span className={styles.current}>KES {priceKSH}</span>
+            {mrpKSH > priceKSH && (
+              <span className={styles.old}>KES {mrpKSH}</span>
             )}
           </div>
 
@@ -98,7 +98,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(
               className={styles.viewBtn}
               onClick={(e) => {
                 stop(e);
-                onView(id);
+                onView(slug);
               }}
             >
               View
@@ -108,7 +108,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(
               className={styles.addBtn}
               onClick={(e) => {
                 stop(e);
-                onAddToCart({ id, name, price, oldPrice, image, badge });
+                onAddToCart({ slug, name, priceKSH, mrpKSH, img, discount } as Deal);
               }}
             >
               <ShoppingCart size={16} />
@@ -127,30 +127,29 @@ ProductCard.displayName = "ProductCard";
 /* Popular Products Section                                                   */
 /* -------------------------------------------------------------------------- */
 
-const PopularProducts: React.FC = () => {
+const PopularProducts = () => {
   const router = useRouter();
   const { addToCart } = useCart();
+  const deals = getAllDealsInKSH();
 
   const handleView = useCallback(
-    (id: number) => {
-      router.push(`/popular-products/${id}`);
-    },
+    (slug: string) => router.push(`/popular/${slug}`),
     [router]
   );
 
   const handleAddToCart = useCallback(
-    (product: Product) => {
+    (deal: Deal) => {
       addToCart({
-        id: String(product.id),
-        name: product.name,
-        price: product.price,
+        id: deal.id,
+        name: deal.name,
+        price: deal.priceKSH,
         quantity: 1,
-        image: product.image,
-        originalPrice: product.oldPrice,
-        badge: product.badge,
+        image: deal.img,
+        originalPrice: deal.mrpKSH > deal.priceKSH ? deal.mrpKSH : undefined,
+        badge: deal.discount > 0 ? `${deal.discount}% OFF` : undefined,
       });
 
-      toast.success(`${product.name} added to cart`, {
+      toast.success(`${deal.name} added to cart`, {
         duration: 2500,
         icon: "🛒",
       });
@@ -171,10 +170,10 @@ const PopularProducts: React.FC = () => {
       </header>
 
       <div className={styles.grid}>
-        {products.map((product) => (
+        {deals.map((deal) => (
           <ProductCard
-            key={product.id}
-            {...product}
+            key={deal.id}
+            {...deal}
             onView={handleView}
             onAddToCart={handleAddToCart}
           />

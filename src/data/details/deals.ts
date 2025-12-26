@@ -1,5 +1,5 @@
-//src/data/details/deals.ts
-// src/data/details/deals.ts
+//src/data/details/popular.ts
+
 
 // ============================================================================
 // TYPE DEFINITIONS

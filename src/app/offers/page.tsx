@@ -2,40 +2,42 @@
 
 "use client";
 
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Heart, Eye, ShoppingCart } from "lucide-react";
 import toast from "react-hot-toast";
 
 import styles from "./Offers.module.css";
-import { products } from "@/data/details/popular";
+import { getAllDealsInKSH } from "@/data/details/popular";
+import type { DealViewModel } from "@/data/details/popular";
 import { useCart } from "@/context/CartContext";
 
 /* -------------------------------------------------------------------------- */
-/* Types                                                                      */
+/* UI-SAFE VIEW TYPES                                                          */
 /* -------------------------------------------------------------------------- */
 
-interface Product {
-  id: number;
+interface UIProduct {
+  id: string;
+  slug: string;
   name: string;
+  image: string;
   price: number;
   oldPrice?: number;
-  image: string;
   badge?: string;
 }
 
-interface ProductCardProps extends Product {
-  onView: (id: number) => void;
-  onAddToCart: (product: Product) => void;
+/* -------------------------------------------------------------------------- */
+/* PRODUCT CARD                                                                */
+/* -------------------------------------------------------------------------- */
+
+interface ProductCardProps extends UIProduct {
+  onView: (slug: string) => void;
+  onAddToCart: (product: UIProduct) => void;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Product Card                                                               */
-/* -------------------------------------------------------------------------- */
-
 const ProductCard: React.FC<ProductCardProps> = memo(
-  ({ id, name, price, oldPrice, image, badge, onView, onAddToCart }) => {
+  ({ id, slug, name, price, oldPrice, image, badge, onView, onAddToCart }) => {
     const stop = (e: React.MouseEvent) => e.stopPropagation();
 
     return (
@@ -43,8 +45,8 @@ const ProductCard: React.FC<ProductCardProps> = memo(
         className={styles.card}
         role="button"
         tabIndex={0}
-        onClick={() => onView(id)}
-        onKeyDown={(e) => e.key === "Enter" && onView(id)}
+        onClick={() => onView(slug)}
+        onKeyDown={(e) => e.key === "Enter" && onView(slug)}
       >
         {badge && <span className={styles.badge}>{badge}</span>}
 
@@ -63,7 +65,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(
             className={styles.iconBtn}
             onClick={(e) => {
               stop(e);
-              onView(id);
+              onView(slug);
             }}
           >
             <Eye size={16} />
@@ -87,9 +89,14 @@ const ProductCard: React.FC<ProductCardProps> = memo(
           <h3 className={styles.title}>{name}</h3>
 
           <div className={styles.priceRow}>
-            <span className={styles.current}>KES {price.toFixed(2)}</span>
-            {oldPrice && (
-              <span className={styles.old}>KES {oldPrice.toFixed(2)}</span>
+            <span className={styles.current}>
+              KES {price.toLocaleString()}
+            </span>
+
+            {typeof oldPrice === "number" && oldPrice > price && (
+              <span className={styles.old}>
+                KES {oldPrice.toLocaleString()}
+              </span>
             )}
           </div>
 
@@ -98,7 +105,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(
               className={styles.viewBtn}
               onClick={(e) => {
                 stop(e);
-                onView(id);
+                onView(slug);
               }}
             >
               View
@@ -108,7 +115,7 @@ const ProductCard: React.FC<ProductCardProps> = memo(
               className={styles.addBtn}
               onClick={(e) => {
                 stop(e);
-                onAddToCart({ id, name, price, oldPrice, image, badge });
+                onAddToCart({ id, slug, name, price, oldPrice, image, badge });
               }}
             >
               <ShoppingCart size={16} />
@@ -124,44 +131,80 @@ const ProductCard: React.FC<ProductCardProps> = memo(
 ProductCard.displayName = "ProductCard";
 
 /* -------------------------------------------------------------------------- */
-/* offers Products Section                                                   */
+/* OFFERS SECTION                                                              */
 /* -------------------------------------------------------------------------- */
 
 const Offers: React.FC = () => {
   const router = useRouter();
   const { addToCart } = useCart();
 
+  /* ------------------------------------------------------------------------ */
+  /* DATA NORMALIZATION (ROBUST AGAINST FUTURE CHANGES)                        */
+  /* ------------------------------------------------------------------------ */
+
+  const products = useMemo<UIProduct[]>(() => {
+    const deals = getAllDealsInKSH();
+
+    return deals.map((deal: DealViewModel) => ({
+      id: deal.id,
+      slug: deal.slug,
+      name: deal.name,
+      image: deal.img,
+      price: deal.priceKSH,
+      oldPrice: deal.mrpKSH > deal.priceKSH ? deal.mrpKSH : undefined,
+      badge: deal.discount > 0 ? `${deal.discount}% OFF` : undefined,
+    }));
+  }, []);
+
+  /* ------------------------------------------------------------------------ */
+  /* HANDLERS                                                                  */
+  /* ------------------------------------------------------------------------ */
+
   const handleView = useCallback(
-    (id: number) => {
-      router.push(`/popular-products/${id}`);
+    (slug: string) => {
+      if (!slug) return;
+      router.push(`/popular-products/${slug}`);
     },
     [router]
   );
 
   const handleAddToCart = useCallback(
-    (product: Product) => {
-      addToCart({
-        id: String(product.id),
-        name: product.name,
-        price: product.price,
-        quantity: 1,
-        image: product.image,
-        originalPrice: product.oldPrice,
-        badge: product.badge,
-      });
+    (product: UIProduct) => {
+      try {
+        addToCart({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: 1,
+          image: product.image,
+          originalPrice: product.oldPrice,
+          badge: product.badge,
+        });
 
-      toast.success(`${product.name} added to cart`, {
-        duration: 2500,
-        icon: "🛒",
-      });
+        toast.success(`${product.name} added to cart`, {
+          duration: 2500,
+          icon: "🛒",
+        });
+      } catch {
+        toast.error("Unable to add item to cart");
+      }
     },
     [addToCart]
   );
 
+  /* ------------------------------------------------------------------------ */
+  /* RENDER                                                                   */
+  /* ------------------------------------------------------------------------ */
+
+  if (!products.length) {
+    return null; // silent fail-safe (no layout break)
+  }
+
   return (
     <section className={styles.container}>
       <header className={styles.header}>
-        <h2>ALL Offers  at OBAT</h2>
+        <h2>ALL Offers at OBAT</h2>
+
         <button
           className={styles.viewAll}
           onClick={() => router.push("/more/new")}
