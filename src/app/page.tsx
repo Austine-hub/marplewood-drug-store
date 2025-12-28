@@ -1,4 +1,4 @@
-// app/page.tsx
+//src/app/page.tsx
 
 import DealsOfTheDay from "@/components/deals/Deals";
 import Hero from "@/components/hero/Hero";
@@ -29,7 +29,7 @@ export default function Home() {
         <DealsOfTheDay/>
       </section>
 
-       {/* PopularProducts*/}
+            {/* TodayDeals*/}
       <section
         aria-label="PopularProducts"
         className="w-full px-4 sm:px-6 lg:px-8 -mt-4"
@@ -37,7 +37,7 @@ export default function Home() {
         <TodayDeals/>
       </section>
 
-     {/* PopularProducts*/}
+           {/* PopularProducts*/}
       <section
         aria-label="PopularProducts"
         className="w-full px-4 sm:px-6 lg:px-8 -mt-4"
@@ -45,7 +45,7 @@ export default function Home() {
         <PopularProducts/>
       </section>
 
-        {/*ProductsGrid */}
+        {/*BoxesGrid */}
       <section aria-labelledby="ProductsGrid" className="w-full">
         <Grid/>
       </section>

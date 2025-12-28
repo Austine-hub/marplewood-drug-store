@@ -40,10 +40,10 @@ const SLIDES: readonly Slide[] = [
     title: 'Professional Healthcare Solutions',
     subtitle: 'Trusted Medical Expertise',
     discount: '20%',
-    buttonText: 'Explore Solutions',
+    buttonText: 'Consult Us',
     image: '/images/hero/hero1.jpg',
     alt: 'Professional healthcare solutions',
-    href: '/solutions',
+    href: '/team',
   },
   {
     id: 2,
@@ -54,7 +54,7 @@ const SLIDES: readonly Slide[] = [
     buttonText: 'Browse Catalog',
     image: '/images/hero/hero2.jpg',
     alt: 'Premium healthcare products',
-    href: '/products',
+    href: '/shop',
   },
   {
     id: 3,
@@ -74,7 +74,7 @@ const SLIDES: readonly Slide[] = [
     description: 'Advanced medical solutions delivered with professional expertise',
     discount: '25%',
     buttonText: 'View Services',
-    image: '/images/hero/hero4.jpg',
+    image: '/images/hero/hero7.jpg',
     alt: 'Excellence in medical care',
     href: '/services',
   },
@@ -98,21 +98,21 @@ const SLIDES: readonly Slide[] = [
     buttonText: 'Discover More',
     image: '/images/hero/hero6.jpg',
     alt: 'New healthcare products',
-    href: '/new-arrivals',
+    href: '/more/home',
   },
 ];
 
 const NAV_ITEMS: readonly NavItem[] = [
-  { icon: FaFlask, label: 'Cosmetics & Beauty', href: '/categories/cosmetics', badge: 'Popular' },
-  { icon: FaWind, label: 'Respiratory Care', href: '/categories/respiratory' },
-  { icon: FaShieldAlt, label: 'Protective Equipment', href: '/products/protection' },
-  { icon: FaThermometerHalf, label: 'Cold & Flu Relief', href: '/conditions/cold-flu',  badge: '30% OFF' },
-  { icon: FaUtensils, label: 'Digestive Health', href: '/categories/digestive' },
-  { icon: FaHeartbeat, label: 'Cardiovascular Care', href: '/conditions/cardiovascular' },
-  { icon: FaPills, label: 'OTC Medications', href: '/products/otc' },
-  { icon: FaStethoscope, label: 'Prescription Services', href: '/products/prescription' },
-  { icon: FaTooth, label: 'Oral Care', href: '/categories/oral-care', badge: 'New' },
-  { icon: FaAppleAlt, label: 'Vitamins & Supplements', href: '/products/supplements' },
+  { icon: FaFlask, label: 'Cosmetics & Beauty', href: '/category/beauty', badge: 'Popular' },
+  { icon: FaWind, label: 'Respiratory Care', href: '/system/respiratory' },
+  { icon: FaShieldAlt, label: 'Protective Equipment', href: '/more/home' },
+  { icon: FaThermometerHalf, label: 'Cold & Flu Relief', href: '/conditions/flu',  badge: '30% OFF' },
+  { icon: FaUtensils, label: 'Digestive Health', href: '/system/git' },
+  { icon: FaHeartbeat, label: 'Cardiovascular Care', href: '/system/cvs' },
+  { icon: FaPills, label: 'OTC Medications', href: '/more/popular' },
+  { icon: FaStethoscope, label: 'Prescription Services', href: '/prescriptions' },
+  { icon: FaTooth, label: 'Oral Care', href: '/system/oral', badge: 'New' },
+  { icon: FaAppleAlt, label: 'Vitamins & Supplements', href: '/category/vitamins' },
 
 ];
 

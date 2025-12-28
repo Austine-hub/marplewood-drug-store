@@ -1,6 +1,4 @@
 // src/context/CartContext.tsx
-
-// src/context/CartContext.tsx
 "use client";
 
 import {
@@ -11,6 +9,7 @@ import {
   useCallback,
   useMemo,
   useRef,
+  useState,
   type ReactNode,
 } from "react";
 import type { StaticImageData } from "next/image";
@@ -55,16 +54,17 @@ export interface CartContextValue {
   readonly subtotal: number;
   readonly totalItems: number;
   readonly isInitialized: boolean;
+  readonly isCartOpen: boolean;
 
-  /** Preferred external API */
   addItem: (item: CartItem) => void;
-
-  /** Internal / legacy API */
   addToCart: (item: CartItem) => void;
-
   removeItem: (id: CartItem["id"]) => void;
   updateQuantity: (id: CartItem["id"], quantity: number) => void;
   clearCart: () => void;
+  
+  openCart: () => void;
+  closeCart: () => void;
+  toggleCart: () => void;
 }
 
 /* =============================================================================
@@ -189,6 +189,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     initialized: false,
   });
 
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /* ---------------- Hydration-safe load ---------------- */
@@ -211,8 +212,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     saveTimer.current = setTimeout(() => {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
-      } catch {}
+      } catch {
+        // Silently fail if localStorage is unavailable
+      }
     }, 200);
+
+    return () => {
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+    };
   }, [state.items, state.initialized]);
 
   /* ---------------- Cross-tab sync ---------------- */
@@ -224,7 +231,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
           ? validateStoredCart(JSON.parse(e.newValue))
           : [];
         dispatch({ type: "INIT", payload: parsed });
-      } catch {}
+      } catch {
+        // Silently fail on parse errors
+      }
     };
 
     window.addEventListener("storage", onStorage);
@@ -237,7 +246,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  /** Public-friendly alias */
   const addItem = useCallback(
     (item: CartItem) => addToCart(item),
     [addToCart]
@@ -254,10 +262,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  const clearCart = useCallback(
-    () => dispatch({ type: "CLEAR" }),
-    []
-  );
+  const clearCart = useCallback(() => dispatch({ type: "CLEAR" }), []);
+
+  const openCart = useCallback(() => setIsCartOpen(true), []);
+  const closeCart = useCallback(() => setIsCartOpen(false), []);
+  const toggleCart = useCallback(() => setIsCartOpen((prev) => !prev), []);
 
   /* ---------------- Derived values ---------------- */
   const availableItems = useMemo(
@@ -292,12 +301,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
       subtotal,
       totalItems,
       isInitialized: state.initialized,
+      isCartOpen,
 
       addItem,
       addToCart,
       removeItem,
       updateQuantity,
       clearCart,
+      
+      openCart,
+      closeCart,
+      toggleCart,
     }),
     [
       state.items,
@@ -306,17 +320,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
       subtotal,
       totalItems,
       state.initialized,
+      isCartOpen,
       addItem,
       addToCart,
       removeItem,
       updateQuantity,
       clearCart,
+      openCart,
+      closeCart,
+      toggleCart,
     ]
   );
 
-  return (
-    <CartContext.Provider value={value}>{children}</CartContext.Provider>
-  );
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
 /* =============================================================================

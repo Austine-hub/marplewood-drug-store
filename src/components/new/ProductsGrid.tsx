@@ -187,7 +187,7 @@ export default function DealsGrid() {
           <p className={styles.subtitle}>Quality products at exceptional prices</p>
         </div>
 
-        <Link href="/deals" className={styles.viewAll}>
+        <Link href="/more/popular" className={styles.viewAll}>
           <span>View All Deals</span>
           <ArrowRight size={20} strokeWidth={2} />
         </Link>

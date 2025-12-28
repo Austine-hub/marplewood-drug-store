@@ -342,6 +342,8 @@
 
   .title {
     font-size: 28px;
+    color:#0636b1;
+    font-weight: bolder;
   }
 
   .subtitle {
@@ -351,6 +353,8 @@
   .description,
   .offer {
     font-size: 15px;
+    color:#000207;
+    font-weight: bolder;
   }
 
   .discount {
