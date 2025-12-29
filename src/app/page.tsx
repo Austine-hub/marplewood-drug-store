@@ -7,6 +7,7 @@ import PopularProducts from "@/components/new/PopularProducts";
 import ProductsGrid from "@/components/new/ProductsGrid";
 import TodayDeals from "@/components/today/TodayDeals";
 import Grid from "@/components/today/Products/Grid1";
+import GetStarted from "@/components/getStarted/GetStarted";
 
 
 export const metadata: Metadata = {
@@ -22,6 +23,11 @@ export default function Home() {
             {/* Hero */}
       <section aria-labelledby="hero-heading" className="w-full">
         <Hero />
+      </section>
+
+                   {/*DealsOfTheDay */}
+      <section aria-labelledby="hero-heading" className="w-full">
+        <GetStarted/>
       </section>
 
              {/*DealsOfTheDay */}
